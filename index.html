@@ -212,6 +212,9 @@ input[type=file]{display:none}
 .bb-info{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted)}
 .bb-info b{color:var(--text);font-weight:700}
 .bb-status{font-size:12px;color:#16A34A}
+.bb-left{display:flex;align-items:center;gap:14px}
+.bb-reset{background:transparent;border:1px solid var(--border);border-radius:var(--rs);padding:9px 14px;font-size:12px;font-weight:500;cursor:pointer;color:#CC2929;font-family:inherit;transition:all .12s}
+.bb-reset:hover{border-color:#FFBBBB;background:var(--bug-bg)}
 .bb-actions{display:flex;align-items:center;gap:10px}
 .bb-btn{background:var(--accent);color:var(--accent-fg);border:none;border-radius:var(--rs);padding:11px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:7px;transition:opacity .12s}
 .bb-btn:hover{opacity:.85}
@@ -318,9 +321,12 @@ input[type=file]{display:none}
 </div>
 
 <div class="bottombar">
-  <div class="bb-info">
-    <span>저장된 카드 <b id="bbCount">0</b>개</span>
-    <span class="bb-status" id="bbStatus"></span>
+  <div class="bb-left">
+    <button class="bb-reset" onclick="resetAllCards()">&#128465; 초기화</button>
+    <div class="bb-info">
+      <span>저장된 카드 <b id="bbCount">0</b>개</span>
+      <span class="bb-status" id="bbStatus"></span>
+    </div>
   </div>
   <div class="bb-actions">
     <button class="bb-btn" onclick="downloadFullBundle()">&#128230; 전체 ZIP 다운로드 (이미지+프롬프트)</button>
@@ -1186,6 +1192,21 @@ async function downloadFullBundle(){
 function updateBottombarCount(){
   var el=document.getElementById('bbCount');
   if(el)el.textContent=S.cards.length;
+}
+function resetAllCards(){
+  if(!S.cards.length){
+    var status=document.getElementById('bbStatus');
+    if(status){status.textContent='삭제할 저장된 카드가 없습니다.';setTimeout(function(){status.textContent='';},1800);}
+    return;
+  }
+  var ok=confirm('저장된 카드 '+S.cards.length+'개를 모두 삭제할까요?\n되돌릴 수 없습니다.');
+  if(!ok)return;
+  if(S.editIdx!==null)cancelEdit();
+  S.cards=[];S.cnt=0;
+  collapsed.clear();
+  renderList();persist();
+  var status=document.getElementById('bbStatus');
+  if(status){status.textContent='모든 카드를 삭제했습니다.';setTimeout(function(){status.textContent='';},1800);}
 }
 
 /* ── Select export modal ── */
