@@ -203,6 +203,19 @@ input[type=file]{display:none}
 .rdesc-input{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:8px 10px;font-size:12px;color:var(--text);font-family:inherit;width:100%;transition:border-color .15s}
 .rdesc-input:focus{outline:none;border-color:var(--border-strong);background:var(--surface)}
 .mactions{display:flex;gap:8px;flex-shrink:0}
+
+/* Bottom action bar */
+.layout{padding-bottom:64px}
+.panel{height:calc(100vh - 64px)}
+.parea{padding-bottom:36px}
+.bottombar{position:fixed;left:0;right:0;bottom:0;height:64px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px;z-index:60;box-shadow:0 -2px 12px rgba(0,0,0,.05)}
+.bb-info{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted)}
+.bb-info b{color:var(--text);font-weight:700}
+.bb-status{font-size:12px;color:#16A34A}
+.bb-actions{display:flex;align-items:center;gap:10px}
+.bb-btn{background:var(--accent);color:var(--accent-fg);border:none;border-radius:var(--rs);padding:11px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:7px;transition:opacity .12s}
+.bb-btn:hover{opacity:.85}
+.bb-btn:disabled{opacity:.35;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -241,9 +254,10 @@ input[type=file]{display:none}
       <div class="sep"></div>
       <div class="fg">
         <label>Jira MCP</label>
-        <div class="prompt-actions">
+        <div class="prompt-actions" style="grid-template-columns:1fr 1fr 1fr">
           <button class="btn2" onclick="openPromptSettings()">프롬프트 설정</button>
-          <button class="btn2" onclick="copyJiraPrompt()">MCP 프롬프트 복사</button>
+          <button class="btn2" onclick="copyJiraPrompt('text')">텍스트 복사</button>
+          <button class="btn2" onclick="copyJiraPrompt('json')">JSON 복사</button>
         </div>
         <div class="copy-status" id="copyStatus"></div>
       </div>
@@ -303,11 +317,21 @@ input[type=file]{display:none}
   </main>
 </div>
 
+<div class="bottombar">
+  <div class="bb-info">
+    <span>저장된 카드 <b id="bbCount">0</b>개</span>
+    <span class="bb-status" id="bbStatus"></span>
+  </div>
+  <div class="bb-actions">
+    <button class="bb-btn" onclick="downloadFullBundle()">&#128230; 전체 ZIP 다운로드 (이미지+프롬프트)</button>
+  </div>
+</div>
+
 <!-- Prompt preview modal -->
 <div class="backdrop" id="promptPreviewBd" onclick="promptPreviewBdClick(event)">
   <div class="prompt-modal">
     <div class="mhdr">
-      <span class="mtitle">MCP 프롬프트</span>
+      <span class="mtitle" id="promptPreviewTitle">MCP 프롬프트</span>
       <button class="mclose" onclick="closePromptPreview()">&#10005;</button>
     </div>
     <textarea class="prompt-preview" id="promptPreview" readonly></textarea>
@@ -813,7 +837,35 @@ function buildJiraPrompt(d){
   ];
   return body.join('\n');
 }
-function copyJiraPrompt(){
+function buildJiraPromptJSON(d,filenameOverride){
+  var parent=d.parentJira||'',key=jiraKey(parent);
+  var platform=d.platform||'';
+  var label=d.type==='bug'?'QA_버그':'QA_개선';
+  var items=issueItems(d);
+  var issueImageCount=items.length||0;
+  var expectedImageCount=d.eImg?1:0;
+  var predictedFilename=filenameOverride||((d.platform||d.type)?makeFilename(d,d.id||1):'');
+  var obj={
+    id:d.id||null,
+    instruction:'아래 상위 티켓의 하위 부작업(Sub-task)으로 디자인 QA 티켓을 생성해줘. issue_image_count가 1보다 크면 이미지별로 각각 별도 티켓을 생성해줘.',
+    parent_ticket_url:parent,
+    parent_ticket_key:key||null,
+    platform:platform,
+    issue_type:d.type==='bug'?'버그':'개선',
+    label:label,
+    assignee:assigneeFor(d)||null,
+    components:platform||null,
+    title_template:'['+(platform||'플랫폼')+'][디자인QA] {이슈 내용을 요약한 제목}',
+    issue_reproduction:d.iText||'',
+    expected_result:d.eText||'',
+    issue_image_count:issueImageCount,
+    expected_image_count:expectedImageCount,
+    screenshot_filename:predictedFilename||null,
+    attachment_note:'스크린샷은 같은 ZIP 안의 동명 PNG 파일을 참고해서 Jira에 첨부해줘.'
+  };
+  return JSON.stringify(obj,null,2);
+}
+function copyJiraPrompt(format){
   var d=getData(),status=document.getElementById('copyStatus');
   if(!d.platform){
     status.textContent='플랫폼을 먼저 선택해주세요.';
@@ -821,7 +873,9 @@ function copyJiraPrompt(){
     return;
   }
   persistPromptSettings();
-  document.getElementById('promptPreview').value=buildJiraPrompt(d);
+  var isJson=format==='json';
+  document.getElementById('promptPreviewTitle').textContent=isJson?'JSON 프롬프트':'MCP 프롬프트';
+  document.getElementById('promptPreview').value=isJson?buildJiraPromptJSON(d):buildJiraPrompt(d);
   document.getElementById('promptPreviewBd').classList.add('open');
   status.textContent='';
 }
@@ -991,6 +1045,7 @@ function toggleAcc(id){
   renderList();
 }
 function renderList(){
+  updateBottombarCount();
   var el=document.getElementById('clist');
   if(!S.cards.length){el.innerHTML='';return;}
   el.innerHTML=S.cards.map(function(c,i){
@@ -1093,6 +1148,44 @@ function trigDownload(href,fname){
   var a=document.createElement('a');
   a.href=href;a.download=fname;
   document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+/* ── Full bundle export (images + prompts) ── */
+async function downloadFullBundle(){
+  if(!S.cards.length){alert('저장된 카드가 없습니다. 먼저 카드를 저장해주세요.');return;}
+  var status=document.getElementById('bbStatus');
+  if(status)status.textContent='압축 파일 생성 중...';
+  try{
+    var zip=new JSZip();
+    var textParts=[];
+    var jsonArr=[];
+    for(var i=0;i<S.cards.length;i++){
+      var c=S.cards[i];
+      var fname=makeFilename(c,i+1);
+      var cv=await renderCardOffscreen(c);
+      var blob=await new Promise(function(res){cv.toBlob(res,'image/png');});
+      zip.file(fname,blob);
+      var jsonName=fname.replace(/\.png$/i,'.json');
+      var jsonStr=buildJiraPromptJSON(c,fname);
+      zip.file(jsonName,jsonStr);
+      jsonArr.push(JSON.parse(jsonStr));
+      textParts.push('===== 카드 #'+(''+c.id).padStart(3,'0')+' ('+fname+') =====\n'+buildJiraPrompt(c));
+    }
+    zip.file('all-prompts.txt',textParts.join('\n\n'));
+    zip.file('all-cards.json',JSON.stringify(jsonArr,null,2));
+    var zipBlob=await zip.generateAsync({type:'blob',compression:'DEFLATE'});
+    var url=URL.createObjectURL(zipBlob);
+    trigDownload(url,'kream-qa-bundle.zip');
+    setTimeout(function(){URL.revokeObjectURL(url);},1000);
+    if(status){status.textContent='다운로드 완료 ('+S.cards.length+'개 카드)';setTimeout(function(){status.textContent='';},2200);}
+  }catch(e){
+    if(status){status.textContent='생성 중 오류가 발생했습니다.';setTimeout(function(){status.textContent='';},2200);}
+    console.error(e);
+  }
+}
+function updateBottombarCount(){
+  var el=document.getElementById('bbCount');
+  if(el)el.textContent=S.cards.length;
 }
 
 /* ── Select export modal ── */
