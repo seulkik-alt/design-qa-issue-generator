@@ -154,6 +154,7 @@ input[type=file]{display:none}
 .clist{display:flex;flex-direction:column;gap:10px}
 .acc-hd{display:flex;align-items:center;gap:8px;padding:8px 4px;cursor:pointer;border-radius:var(--rs);user-select:none;transition:background .1s;font-size:13px}
 .acc-hd:hover{background:rgba(0,0,0,.04)}
+.acc-item .acc-hd{max-width:1200px;width:100%;margin:0 auto;box-sizing:border-box;padding-left:20px;padding-right:20px}
 .acc-arrow{font-size:10px;color:var(--text-hint);transition:transform .2s;flex-shrink:0;width:14px;text-align:center}
 .acc-arrow.closed{transform:rotate(-90deg)}
 .acc-hd-id{font-size:12px;font-weight:600;color:var(--text-muted)}
@@ -163,7 +164,7 @@ input[type=file]{display:none}
 .cdel-btn{cursor:pointer;color:var(--text-hint);font-size:12px;padding:2px 4px}
 .cdel-btn:hover{color:var(--bug-fg)}
 .acc-body.closed{display:none}
-.issue-settings-body{display:flex;flex-direction:column;gap:6px}
+.issue-settings-body{display:flex;flex-direction:column;gap:14px}
 .issue-content-body{display:flex;flex-direction:column;gap:20px}
 
 /* Export select modal */
@@ -255,14 +256,18 @@ input[type=file]{display:none}
           <span class="acc-arrow" id="issueSettingsArrow">&#9660;</span>
         </div>
         <div class="acc-body issue-settings-body" id="issueSettingsBody">
-          <label>Jira 링크</label>
-          <input type="url" id="parentJira" placeholder="https://jira.navercorp.com/browse/KREAM-41588" oninput="persistPromptSettings()">
-          <label>플랫폼별 담당자</label>
-          <div class="meta-grid">
-            <input type="text" id="assigneeIOS" placeholder="iOS 담당자" oninput="persistPromptSettings()">
-            <input type="text" id="assigneeAndroid" placeholder="Android 담당자" oninput="persistPromptSettings()">
-            <input type="text" id="assigneeWeb" placeholder="Web 담당자" oninput="persistPromptSettings()">
-            <input type="text" id="assigneeServer" placeholder="Server 담당자" oninput="persistPromptSettings()">
+          <div class="fg">
+            <label>Jira 링크</label>
+            <input type="url" id="parentJira" placeholder="https://jira.navercorp.com/browse/KREAM-41588" oninput="persistPromptSettings()">
+          </div>
+          <div class="fg">
+            <label>플랫폼별 담당자</label>
+            <div class="meta-grid">
+              <input type="text" id="assigneeIOS" placeholder="iOS 담당자" oninput="persistPromptSettings()">
+              <input type="text" id="assigneeAndroid" placeholder="Android 담당자" oninput="persistPromptSettings()">
+              <input type="text" id="assigneeWeb" placeholder="Web 담당자" oninput="persistPromptSettings()">
+              <input type="text" id="assigneeServer" placeholder="Server 담당자" oninput="persistPromptSettings()">
+            </div>
           </div>
           <div class="sep"></div>
           <div class="fg">
