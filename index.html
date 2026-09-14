@@ -55,7 +55,7 @@ body{background:var(--bg);color:var(--text);font-family:"Pretendard Variable",Pr
 .pb{padding:20px 24px;display:flex;flex-direction:column;gap:20px;flex:1;overflow-y:auto}
 .fg{display:flex;flex-direction:column;gap:6px}
 label{font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:.02em}
-.panel-section-title{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.panel-section-title{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.01em}
 .panel-section{border:none;border-radius:var(--rm);background:var(--surface);box-shadow:var(--shadow-1);padding:14px;display:flex;flex-direction:column;gap:24px}
 textarea,input[type=text],input[type=url],input[type=password]{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:9px 12px;font-size:13px;color:var(--text);font-family:inherit;width:100%;line-height:1.5;transition:border-color .15s,box-shadow .15s}
 textarea::placeholder,input[type=text]::placeholder,input[type=url]::placeholder,input[type=password]::placeholder{color:var(--text-placeholder);opacity:1}
@@ -362,15 +362,14 @@ input[type=file]{display:none}
             </ul>
             <div class="figma-import-status" id="figmaImportStatus"></div>
             <textarea id="etext" rows="3" placeholder="기대하는 동작 설명" oninput="upd()"></textarea>
-            <button class="btn2 diffbtn" id="diffViewBtn" onclick="openDiffView()" disabled>&#128269; Diff 보기 (기대결과 vs 이슈)</button>
           </div>
         </div>
         <div class="sep"></div>
         <div class="fg">
           <label>Jira MCP</label>
           <div class="prompt-actions" style="grid-template-columns:1fr 1fr auto">
-            <button class="btn2" onclick="copyJiraPrompt('text')">텍스트 복사</button>
-            <button class="btn2" onclick="copyJiraPrompt('json')">JSON 복사</button>
+            <button class="btn2" onclick="copyJiraPrompt('text')">프롬프트 보기</button>
+            <button class="btn2" onclick="copyJiraPrompt('json')">JSON 보기</button>
             <button class="btng" onclick="openPromptSettings()" title="설정" style="padding:10px 12px">&#9881;&#65039;</button>
           </div>
           <div class="copy-status" id="copyStatus"></div>
