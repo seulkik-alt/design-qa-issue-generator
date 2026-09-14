@@ -44,6 +44,7 @@
   --shadow-3:0 12px 32px oklch(0.155 0.060 261 / .10),0 2px 6px oklch(0.155 0.060 261 / .06);
   --product-shadow:0 4px 12px oklch(0.155 0.060 261 / .06),0 1px 2px oklch(0.155 0.060 261 / .04);
   --border-card:color-mix(in srgb,var(--border) 70%,white); /* 30% lighter, card-internal dividers */
+  --surface2-light:color-mix(in srgb,var(--surface2) 70%,white); /* 30% lighter, photo attach area */
   --mc:#FF3333;--mf:rgba(255,51,51,.13);
 }
 body{background:var(--bg);color:var(--text);font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Apple SD Gothic Neo","Noto Sans KR",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
@@ -76,7 +77,7 @@ textarea:focus,input[type=text]:focus,input[type=url]:focus,input[type=password]
 .web-sub{display:none;flex-direction:column;gap:4px}
 .web-sub.on{display:flex}
 .web-sub-label{font-size:11px;color:var(--text-hint);margin-top:2px}
-.upload{border:1px dashed var(--border-strong);border-radius:var(--r);padding:11px;cursor:pointer;transition:all .15s;background:var(--surface2);min-height:auto;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.upload{border:1px dashed var(--border-strong);border-radius:var(--r);padding:11px;cursor:pointer;transition:all .15s;background:var(--surface2-light);min-height:auto;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 .link-btn{background:none;border:none;padding:0;margin:0;font-size:12px;font-weight:600;color:var(--text-muted);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-family:inherit;transition:color .12s;flex-shrink:0}
 .link-btn:hover{color:var(--text)}
 .upload:hover{border-color:var(--text-muted);background:var(--surface)}
@@ -89,7 +90,7 @@ textarea:focus,input[type=text]:focus,input[type=url]:focus,input[type=password]
 .pimg{width:100%;border-radius:calc(var(--r) - 2px);display:block;height:auto}
 .rmbtn{position:absolute;top:6px;right:6px;width:22px;height:22px;background:rgba(0,0,0,.5);border:none;border-radius:50%;color:#fff;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center}
 .multi-list{display:flex;flex-direction:column;gap:8px}
-.multi-item{border:1px solid var(--border);border-radius:var(--r);background:var(--surface2);padding:8px;display:flex;flex-direction:column;gap:8px}
+.multi-item{border:1px solid var(--border);border-radius:var(--r);background:var(--surface2-light);padding:8px;display:flex;flex-direction:column;gap:8px}
 .multi-thumb{position:relative;width:100%;height:72px;border-radius:calc(var(--r) - 2px);overflow:hidden;background:#F0F0F0;box-shadow:var(--product-shadow)}
 .multi-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .multi-thumb .rmbtn{top:4px;right:4px;width:20px;height:20px;font-size:10px}
@@ -304,7 +305,7 @@ input[type=file]{display:none}
           <div class="fg">
             <label>플랫폼</label>
             <div class="seg" id="platformSeg">
-              <button class="seg-item" data-v="iOS" onclick="selP(this)">iOS</button>
+              <button class="seg-item active" data-v="iOS" onclick="selP(this)">iOS</button>
               <button class="seg-item" data-v="Android" onclick="selP(this)">Android</button>
               <button class="seg-item" data-v="Web" onclick="selP(this)">Web</button>
               <button class="seg-item" data-v="Server" onclick="selP(this)">Server</button>
@@ -535,7 +536,7 @@ input[type=file]{display:none}
 </div>
 
 <script>
-var S={platform:null,webSub:null,type:'bug',iItems:[],iImg:null,iR:[],eImg:null,eR:[],cards:[],cnt:0,target:null,markIdx:null,tmp:[],editIdx:null,cardMark:null,markMode:'box',markColor:'#FF3333'};
+var S={platform:'iOS',webSub:null,type:'bug',iItems:[],iImg:null,iR:[],eImg:null,eR:[],cards:[],cnt:0,target:null,markIdx:null,tmp:[],editIdx:null,cardMark:null,markMode:'box',markColor:'#FF3333'};
 var _diffViewCache=null;
 var _exportDirHandle=null;
 var collapsed=new Set();
@@ -1541,7 +1542,8 @@ function reset(){
   updateMarkButton('i');updateMarkButton('e');
   document.querySelectorAll('#platformSeg .seg-item, #webSubSeg .seg-item').forEach(function(b){b.classList.remove('active');});
   document.getElementById('webSub').classList.remove('on');
-  S.platform=null;S.webSub=null;S.type='bug';
+  S.platform='iOS';S.webSub=null;S.type='bug';
+  document.querySelector('#platformSeg .seg-item[data-v="iOS"]').classList.add('active');
   document.querySelectorAll('#typeSeg .seg-item').forEach(function(b){b.classList.remove('active');});
   document.querySelector('#typeSeg .seg-item.bug').classList.add('active');
   upd();
