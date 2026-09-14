@@ -27,12 +27,15 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .pb{padding:20px 24px;display:flex;flex-direction:column;gap:20px;flex:1;overflow-y:auto}
 .fg{display:flex;flex-direction:column;gap:6px}
 label{font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:.02em}
-textarea,input[type=text],input[type=url],input[type=password]{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:9px 12px;font-size:13px;color:var(--text);font-family:inherit;width:100%;line-height:1.5;transition:border-color .15s,box-shadow .15s}
+.panel-section-title{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.panel-section{border:1px solid var(--border);border-radius:var(--rm);background:var(--surface2);padding:14px;display:flex;flex-direction:column;gap:24px}
+textarea,input[type=text],input[type=url],input[type=password]{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:9px 12px;font-size:13px;color:var(--text);font-family:inherit;width:100%;line-height:1.5;transition:border-color .15s,box-shadow .15s}
+textarea::placeholder,input[type=text]::placeholder,input[type=url]::placeholder,input[type=password]::placeholder{color:#bbb;opacity:1}
 textarea{resize:none;min-height:72px}
 textarea:focus,input[type=text]:focus,input[type=url]:focus,input[type=password]:focus{outline:2px solid var(--accent-focus);outline-offset:1px;border-color:var(--border-strong);background:var(--surface)}
 .figma-import-row{display:flex;gap:6px}
 .figma-import-row input{flex:1}
-.figma-import-row .btng{flex-shrink:0;width:auto}
+.figma-import-row .btn2{flex-shrink:0;width:auto}
 .figma-import-status{font-size:11px;min-height:14px}
 .figma-import-status.ok{color:var(--success)}
 .figma-import-status.err{color:var(--bug-fg)}
@@ -46,8 +49,11 @@ textarea:focus,input[type=text]:focus,input[type=url]:focus,input[type=password]
 .web-sub{display:none;flex-direction:column;gap:4px}
 .web-sub.on{display:flex}
 .web-sub-label{font-size:11px;color:var(--text-hint);margin-top:2px}
-.upload{border:1px dashed var(--border-strong);border-radius:var(--r);padding:11px;cursor:pointer;transition:all .15s;background:var(--surface2);min-height:auto;display:flex;align-items:center;justify-content:center}
+.upload{border:1px dashed var(--border-strong);border-radius:var(--r);padding:11px;cursor:pointer;transition:all .15s;background:var(--surface2);min-height:auto;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.link-btn{background:none;border:none;padding:0;margin:0;font-size:12px;font-weight:600;color:var(--text-muted);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-family:inherit;transition:color .12s;flex-shrink:0}
+.link-btn:hover{color:var(--text)}
 .upload:hover{border-color:var(--text-muted);background:var(--surface)}
+.upload:focus{outline:2px solid var(--accent-focus);outline-offset:2px;border-color:var(--text-muted)}
 .upload.has{border-style:solid;padding:0;min-height:unset;cursor:default}
 .upload.drag-over{border-color:var(--text);border-style:dashed;background:var(--surface2);transform:scale(1.01)}
 .uph{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--text-hint);font-size:12px;pointer-events:none}
@@ -61,7 +67,7 @@ textarea:focus,input[type=text]:focus,input[type=url]:focus,input[type=password]
 .multi-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .multi-thumb .rmbtn{top:4px;right:4px;width:20px;height:20px;font-size:10px}
 .multi-item .mbtn{display:flex;margin-top:0}
-.mbtn-row{display:flex;gap:6px;margin-top:6px}
+.mbtn-row{display:flex;align-items:center;gap:6px;margin-top:6px}
 .mbtn-row .mbtn{flex:1;margin-top:0}
 .diffbtn{width:100%;margin-top:8px}
 .meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -81,6 +87,8 @@ textarea:focus,input[type=text]:focus,input[type=url]:focus,input[type=password]
 .btn1.edit-mode{background:var(--warn);color:var(--text)}
 .btn2{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--pill);padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;color:var(--accent);font-family:inherit;transition:all .12s}
 .btn2:hover{border-color:var(--accent)}
+.btn2:disabled{opacity:.4;cursor:not-allowed;border-color:var(--border)}
+.btn2:disabled:hover{border-color:var(--border)}
 .btng{background:var(--surface2);border:none;border-radius:var(--rm);padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text-muted);font-family:inherit;transition:all .12s}
 .btng:hover{color:var(--text)}
 .sep{height:1px;background:var(--border)}
@@ -156,6 +164,7 @@ input[type=file]{display:none}
 .cdel-btn:hover{color:var(--bug-fg)}
 .acc-body.closed{display:none}
 .issue-settings-body{display:flex;flex-direction:column;gap:6px}
+.issue-content-body{display:flex;flex-direction:column;gap:20px}
 
 /* Export select modal */
 .sel-modal{background:var(--surface);border-radius:var(--rl);padding:20px;width:min(520px,96vw);max-height:80vh;overflow:auto;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
@@ -197,12 +206,19 @@ input[type=file]{display:none}
 .cruler-line,.sruler-line{position:absolute;left:0;right:0;top:8px;border-top:2px solid currentColor}
 .cruler-line::before,.cruler-line::after,.sruler-line::before,.sruler-line::after{content:"";position:absolute;top:-7px;width:0;height:14px;border-left:2px solid currentColor}
 .cruler-line::before,.sruler-line::before{left:0}.cruler-line::after,.sruler-line::after{right:0}
+.cruler.v .cruler-line,.sruler.v .sruler-line{left:8px;right:auto;top:0;bottom:0;width:0;height:auto;border-top:none;border-left:2px solid currentColor}
+.cruler.v .cruler-line::before,.cruler.v .cruler-line::after,.sruler.v .sruler-line::before,.sruler.v .sruler-line::after{top:-7px;left:-7px;width:14px;height:0;border-left:none;border-top:2px solid currentColor}
+.cruler.v .cruler-line::before,.sruler.v .sruler-line::before{top:0}
+.cruler.v .cruler-line::after,.sruler.v .sruler-line::after{top:auto;bottom:0}
 .cruler .crlabel{top:-7px;left:50%;transform:translateX(-50%)}
+.cruler.v .crlabel{top:50%;left:-1px;transform:translateY(-50%)}
 .cruler .crdel{display:none;top:-8px;right:-8px;pointer-events:auto}
 .cruler:hover .crdel{display:flex}
-.ghost.measure{height:18px!important;background:transparent;border:none}
+.ghost.measure{background:transparent;border:none}
 .ghost.measure::before{content:"";position:absolute;left:0;right:0;top:8px;border-top:2px dashed currentColor}
 .ghost.measure::after{content:"";position:absolute;left:0;right:0;top:2px;height:14px;border-left:2px dashed currentColor;border-right:2px dashed currentColor}
+.ghost.measure.v::before{content:"";position:absolute;left:8px;right:auto;top:0;bottom:0;width:0;height:auto;border-top:none;border-left:2px dashed currentColor}
+.ghost.measure.v::after{content:"";position:absolute;left:2px;right:auto;top:0;bottom:0;width:14px;height:auto;border-left:none;border-right:none;border-top:2px dashed currentColor;border-bottom:2px dashed currentColor}
 .rdesc{display:flex;flex-direction:column;gap:8px}
 .rdesc-empty{font-size:12px;color:var(--text-hint);padding:10px 12px;background:var(--surface2);border-radius:var(--rs)}
 .rdesc-row{display:grid;grid-template-columns:24px 1fr;align-items:center;gap:8px}
@@ -232,77 +248,89 @@ input[type=file]{display:none}
 <div class="layout">
   <aside class="panel">
     <div class="pb">
-      <div class="fg">
+      <div class="panel-section">
         <div class="acc-hd" onclick="toggleIssueSettings()" style="padding:0">
-          <label style="cursor:pointer;margin:0">이슈 설정</label>
+          <span class="panel-section-title">이슈 설정</span>
           <span class="acc-spacer"></span>
           <span class="acc-arrow" id="issueSettingsArrow">&#9660;</span>
         </div>
         <div class="acc-body issue-settings-body" id="issueSettingsBody">
+          <label>Jira 링크</label>
           <input type="url" id="parentJira" placeholder="https://jira.navercorp.com/browse/KREAM-41588" oninput="persistPromptSettings()">
-          <div class="web-sub-label">플랫폼별 담당자</div>
+          <label>플랫폼별 담당자</label>
           <div class="meta-grid">
             <input type="text" id="assigneeIOS" placeholder="iOS 담당자" oninput="persistPromptSettings()">
             <input type="text" id="assigneeAndroid" placeholder="Android 담당자" oninput="persistPromptSettings()">
             <input type="text" id="assigneeWeb" placeholder="Web 담당자" oninput="persistPromptSettings()">
             <input type="text" id="assigneeServer" placeholder="Server 담당자" oninput="persistPromptSettings()">
           </div>
-        </div>
-      </div>
-      <div class="sep"></div>
-      <div class="fg">
-        <label>플랫폼</label>
-        <div class="seg" id="platformSeg">
-          <button class="seg-item" data-v="iOS" onclick="selP(this)">iOS</button>
-          <button class="seg-item" data-v="Android" onclick="selP(this)">Android</button>
-          <button class="seg-item" data-v="Web" onclick="selP(this)">Web</button>
-          <button class="seg-item" data-v="Server" onclick="selP(this)">Server</button>
-        </div>
-        <!-- Web sub-selector -->
-        <div class="web-sub" id="webSub">
-          <span class="web-sub-label">Web 환경</span>
-          <div class="seg" id="webSubSeg">
-            <button class="seg-item" data-v="Mobile" onclick="selWebSub(this)">Mobile</button>
-            <button class="seg-item" data-v="PC" onclick="selWebSub(this)">PC</button>
-            <button class="seg-item" data-v="공통" onclick="selWebSub(this)">공통</button>
+          <div class="sep"></div>
+          <div class="fg">
+            <label>플랫폼</label>
+            <div class="seg" id="platformSeg">
+              <button class="seg-item" data-v="iOS" onclick="selP(this)">iOS</button>
+              <button class="seg-item" data-v="Android" onclick="selP(this)">Android</button>
+              <button class="seg-item" data-v="Web" onclick="selP(this)">Web</button>
+              <button class="seg-item" data-v="Server" onclick="selP(this)">Server</button>
+            </div>
+            <!-- Web sub-selector -->
+            <div class="web-sub" id="webSub">
+              <span class="web-sub-label">Web 환경</span>
+              <div class="seg" id="webSubSeg">
+                <button class="seg-item" data-v="Mobile" onclick="selWebSub(this)">Mobile</button>
+                <button class="seg-item" data-v="PC" onclick="selWebSub(this)">PC</button>
+                <button class="seg-item" data-v="공통" onclick="selWebSub(this)">공통</button>
+              </div>
+            </div>
+          </div>
+          <div class="fg">
+            <label>이슈 유형</label>
+            <div class="seg" id="typeSeg">
+              <button class="seg-item bug active" data-v="bug" onclick="selT(this)">버그</button>
+              <button class="seg-item imp" data-v="imp" onclick="selT(this)">개선</button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="fg">
-        <label>이슈 유형</label>
-        <div class="seg" id="typeSeg">
-          <button class="seg-item bug active" data-v="bug" onclick="selT(this)">버그</button>
-          <button class="seg-item imp" data-v="imp" onclick="selT(this)">개선</button>
+
+      <div class="panel-section">
+        <div class="acc-hd" onclick="toggleIssueContent()" style="padding:0">
+          <span class="panel-section-title">이슈 내용</span>
+          <span class="acc-spacer"></span>
+          <span class="acc-arrow" id="issueContentArrow">&#9660;</span>
         </div>
-      </div>
-      <div class="sep"></div>
-      <div class="fg">
-        <label>이슈 재현</label>
-        <div class="upload" id="iup" onclick="trigUp('ifile')">
-          <div class="uph"><span class="ui">+</span><span>이미지 첨부 (여러 장 가능)</span></div>
+        <div class="acc-body issue-content-body" id="issueContentBody">
+          <div class="fg">
+            <label>이슈 재현</label>
+            <div class="upload" id="iup" tabindex="0" title="클릭하여 첨부하거나, 이미지 복사 후 이 영역에서 Ctrl+V(Cmd+V)로 붙여넣기" onclick="trigUp('ifile')">
+              <div class="uph"><span class="ui">+</span><span>이미지 첨부 (여러 장 가능)</span></div>
+              <button class="link-btn" onclick="event.stopPropagation();pasteImageFromClipboard('i')">붙여넣기</button>
+            </div>
+            <input type="file" id="ifile" accept="image/*" multiple onchange="onUp(this,'i')">
+            <div class="multi-list" id="iimgs"></div>
+            <textarea id="itext" rows="3" placeholder="현재 상태 설명" oninput="upd()"></textarea>
+          </div>
+          <div class="fg">
+            <label>기대 결과</label>
+            <div class="upload" id="eup" tabindex="0" title="클릭하여 첨부하거나, 이미지 복사 후 이 영역에서 Ctrl+V(Cmd+V)로 붙여넣기" onclick="trigUp('efile')">
+              <div class="uph"><span class="ui">+</span><span>이미지 첨부 (선택)</span></div>
+              <button class="link-btn" onclick="event.stopPropagation();pasteImageFromClipboard('e')">붙여넣기</button>
+            </div>
+            <input type="file" id="efile" accept="image/*" onchange="onUp(this,'e')">
+            <div class="multi-list" id="eimgs"></div>
+            <div class="figma-import-row">
+              <input type="url" id="figmaLinkInput" placeholder="Figma 프레임 링크 붙여넣기 (node-id 포함)" onkeydown="if(event.key==='Enter'){event.preventDefault();importFigmaLink();}">
+              <button class="btn2" id="figmaImportBtn" onclick="importFigmaLink()">가져오기</button>
+            </div>
+            <ul class="figma-import-hint">
+              <li>링크 붙여넣기 기능은 프롬프트 설정에서 Figma Token 입력이 필요합니다.</li>
+              <li>Figma 프레임 복사 : 프레임 선택 후 Mac은 &#8984;L / Window는 Ctrl+L</li>
+            </ul>
+            <div class="figma-import-status" id="figmaImportStatus"></div>
+            <textarea id="etext" rows="3" placeholder="기대하는 동작 설명" oninput="upd()"></textarea>
+            <button class="btn2 diffbtn" id="diffViewBtn" onclick="openDiffView()" disabled>&#128269; Diff 보기 (기대결과 vs 이슈)</button>
+          </div>
         </div>
-        <input type="file" id="ifile" accept="image/*" multiple onchange="onUp(this,'i')">
-        <div class="multi-list" id="iimgs"></div>
-        <textarea id="itext" rows="3" placeholder="현재 상태 설명" oninput="upd()"></textarea>
-      </div>
-      <div class="fg">
-        <label>기대 결과</label>
-        <div class="upload" id="eup" onclick="trigUp('efile')">
-          <div class="uph"><span class="ui">+</span><span>이미지 첨부 (선택)</span></div>
-        </div>
-        <input type="file" id="efile" accept="image/*" onchange="onUp(this,'e')">
-        <div class="multi-list" id="eimgs"></div>
-        <div class="figma-import-row">
-          <input type="url" id="figmaLinkInput" placeholder="Figma 프레임 링크 붙여넣기 (node-id 포함)" onkeydown="if(event.key==='Enter'){event.preventDefault();importFigmaLink();}">
-          <button class="btng" id="figmaImportBtn" onclick="importFigmaLink()">가져오기</button>
-        </div>
-        <ul class="figma-import-hint">
-          <li>링크 붙여넣기 기능은 프롬프트 설정에서 Figma Token 입력이 필요합니다.</li>
-          <li>Figma 프레임 복사 : 프레임 선택 후 Mac은 &#8984;L / Window는 Ctrl+L</li>
-        </ul>
-        <div class="figma-import-status" id="figmaImportStatus"></div>
-        <textarea id="etext" rows="3" placeholder="기대하는 동작 설명" oninput="upd()"></textarea>
-        <button class="btng diffbtn" id="diffViewBtn" onclick="openDiffView()" disabled>&#128269; Diff 보기 (기대결과 vs 이슈)</button>
       </div>
       <div class="sep"></div>
       <div class="fg">
@@ -475,7 +503,7 @@ var _diffViewCache=null;
 var _exportDirHandle=null;
 var collapsed=new Set();
 var selectedIds=new Set();
-var drag={on:false,x0:0,y0:0,g:null};
+var drag={on:false,x0:0,y0:0,cx0:0,cy0:0,g:null};
 var _pmReadyResolve;
 var pmReady=new Promise(function(res){_pmReadyResolve=res;});
 if(window.pixelmatch)_pmReadyResolve();
@@ -595,6 +623,14 @@ function toggleIssueSettings(){
   issueSettingsOpen=!issueSettingsOpen;
   document.getElementById('issueSettingsBody').classList.toggle('closed',!issueSettingsOpen);
   document.getElementById('issueSettingsArrow').classList.toggle('closed',!issueSettingsOpen);
+}
+
+/* ── Issue content (collapsible) ── */
+var issueContentOpen=true;
+function toggleIssueContent(){
+  issueContentOpen=!issueContentOpen;
+  document.getElementById('issueContentBody').classList.toggle('closed',!issueContentOpen);
+  document.getElementById('issueContentArrow').classList.toggle('closed',!issueContentOpen);
 }
 
 /* ── Platform / Web sub ── */
@@ -736,6 +772,32 @@ function initDrop(){
   });
 }
 initDrop();
+
+/* ── Clipboard paste ── */
+function extractPastedImages(e){
+  var cd=e.clipboardData||window.clipboardData;
+  if(!cd||!cd.items)return[];
+  var files=[];
+  for(var i=0;i<cd.items.length;i++){
+    var it=cd.items[i];
+    if(it.kind==='file'&&it.type&&it.type.indexOf('image/')===0){
+      var f=it.getAsFile();
+      if(f)files.push(f);
+    }
+  }
+  return files;
+}
+function initPaste(){
+  document.addEventListener('paste',function(e){
+    var files=extractPastedImages(e);
+    if(!files.length)return;
+    e.preventDefault();
+    var active=document.activeElement;
+    var t=(active&&(active.id==='etext'||active.id==='eup'))?'e':'i';
+    files.forEach(function(f){loadFile(f,t);});
+  });
+}
+initPaste();
 function showThumb(t,src){
   if(t==='i')renderIThumbs();else renderEThumb();
 }
@@ -747,7 +809,7 @@ function renderIThumbs(){
       '<div class="multi-thumb"><img src="'+item.src+'"><button class="rmbtn" onclick="rmIImg(event,'+i+')">&#10005;</button></div>'+
       '<div class="mbtn-row">'+
         '<button class="mbtn'+(nums?' on':'')+'" onclick="openM(\'i\','+i+')">&#128205; 마킹'+(nums?' <span class="mnums">'+nums+'</span>':'')+'</button>'+
-        '<button class="mbtn" onclick="copyImageToClipboard(\'i\','+i+',this)">&#128203; 복사</button>'+
+        '<button class="link-btn" onclick="pasteImageFromClipboard(\'i\','+i+',this)">붙여넣기</button>'+
       '</div>'+
       '</div>';
   }).join('');
@@ -760,29 +822,51 @@ function renderEThumb(){
     '<div class="multi-thumb"><img src="'+S.eImg+'"><button class="rmbtn" onclick="rmImg(event)">&#10005;</button></div>'+
     '<div class="mbtn-row">'+
       '<button class="mbtn'+(nums?' on':'')+'" onclick="openM(\'e\')">&#128205; 마킹'+(nums?' <span class="mnums">'+nums+'</span>':'')+'</button>'+
-      '<button class="mbtn" onclick="copyImageToClipboard(\'e\',0,this)">&#128203; 복사</button>'+
+      '<button class="link-btn" onclick="pasteImageFromClipboard(\'e\',0,this)">붙여넣기</button>'+
     '</div>'+
     '</div>';
 }
-async function copyImageToClipboard(t,idx,btnEl){
-  var src=t==='i'?(S.iItems[idx]&&S.iItems[idx].src):S.eImg;
-  if(!src)return;
-  if(!navigator.clipboard||!window.ClipboardItem){
-    alert('이 브라우저는 이미지 클립보드 복사를 지원하지 않습니다. Chrome 계열 브라우저를 사용해주세요.');
+async function pasteImageFromClipboard(t,idx,btnEl){
+  if(!navigator.clipboard||!navigator.clipboard.read){
+    alert('이 브라우저는 클립보드에서 이미지 읽기를 지원하지 않습니다. Chrome 계열 브라우저를 사용해주세요.');
     return;
   }
   try{
-    var blob=await(await fetch(src)).blob();
-    var type=blob.type||'image/png';
-    var item={};item[type]=blob;
-    await navigator.clipboard.write([new ClipboardItem(item)]);
-    if(btnEl){
-      var orig=btnEl.innerHTML;
-      btnEl.innerHTML='&#9989; 복사됨';
-      setTimeout(function(){btnEl.innerHTML=orig;},1400);
+    var clipItems=await navigator.clipboard.read();
+    var blob=null;
+    var seenTypes=[];
+    for(var i=0;i<clipItems.length&&!blob;i++){
+      seenTypes=seenTypes.concat(clipItems[i].types);
+      var imgType=clipItems[i].types.find(function(ty){return ty.indexOf('image/')===0;});
+      if(imgType)blob=await clipItems[i].getType(imgType);
     }
+    if(!blob){
+      var typesMsg=seenTypes.length?seenTypes.join(', '):'(감지된 형식 없음)';
+      alert('클립보드에 이미지가 없습니다. 먼저 이미지를 복사해주세요.\n\n감지된 클립보드 형식: '+typesMsg+'\n\n※ 파인더에서 파일을 복사(⌘C)한 경우 파일 참조만 올라가서 이미지로 인식되지 않습니다. 웹에서 이미지를 우클릭 → "이미지 복사"로 복사했는지 확인해주세요.');
+      return;
+    }
+    var dataUrl=await blobToDataURL(blob);
+    if(t==='i'){
+      if(idx==null){
+        S.iItems.push({src:dataUrl,r:[]});
+      }else{
+        if(!S.iItems[idx])return;
+        S.iItems[idx]={src:dataUrl,r:[]};
+      }
+      S.iImg=S.iItems[0]?S.iItems[0].src:null;
+      S.iR=S.iItems[0]?S.iItems[0].r:[];
+      renderIThumbs();
+    }else{
+      S.eImg=dataUrl;S.eR=[];
+      renderEThumb();
+    }
+    upd();
   }catch(err){
-    alert('클립보드 복사 실패: '+err.message);
+    if(err.name==='NotAllowedError'){
+      alert('클립보드 읽기 권한이 거부되었습니다. 브라우저 주소창의 자물쇠(사이트 설정) 아이콘에서 클립보드 권한을 허용하거나, 페이지를 한 번 클릭해 포커스를 준 뒤 다시 시도해주세요.');
+    }else{
+      alert('클립보드 붙여넣기 실패: '+err.message);
+    }
   }
 }
 function updateMarkButton(t){
@@ -877,7 +961,7 @@ function pct(e){
 }
 function mdown(e){
   if(e.target.closest('.cregion'))return;
-  var p=pct(e);drag.on=true;drag.x0=p.x;drag.y0=p.y;
+  var p=pct(e);drag.on=true;drag.x0=p.x;drag.y0=p.y;drag.cx0=e.clientX;drag.cy0=e.clientY;
   var g=document.createElement('div');g.className='ghost';
   if(S.markMode==='measure')g.classList.add('measure');
   g.style.color=S.markColor;
@@ -889,7 +973,13 @@ function mmove(e){
   var p=pct(e);
   var x1=Math.min(drag.x0,p.x),y1=Math.min(drag.y0,p.y),x2=Math.max(drag.x0,p.x),y2=Math.max(drag.y0,p.y);
   if(S.markMode==='measure'){
-    drag.g.style.cssText='left:'+x1+'%;top:'+p.y+'%;width:'+(x2-x1)+'%;height:18px;color:'+S.markColor;
+    var vertical=Math.abs(e.clientY-drag.cy0)>Math.abs(e.clientX-drag.cx0);
+    drag.g.classList.toggle('v',vertical);
+    if(vertical){
+      drag.g.style.cssText='left:'+p.x+'%;top:'+y1+'%;width:18px;height:'+(y2-y1)+'%;color:'+S.markColor;
+    }else{
+      drag.g.style.cssText='left:'+x1+'%;top:'+p.y+'%;width:'+(x2-x1)+'%;height:18px;color:'+S.markColor;
+    }
   }else{
     drag.g.style.cssText='left:'+x1+'%;top:'+y1+'%;width:'+(x2-x1)+'%;height:'+(y2-y1)+'%;color:'+S.markColor;
   }
@@ -900,8 +990,14 @@ function mup(e){
   var p=pct(e);
   var x1=Math.min(drag.x0,p.x),y1=Math.min(drag.y0,p.y),x2=Math.max(drag.x0,p.x),y2=Math.max(drag.y0,p.y);
   if(S.markMode==='measure'){
-    if((x2-x1)<1.5)return;
-    S.tmp.push({type:'measure',x1:x1,y1:p.y,x2:x2,y2:p.y,n:S.tmp.length+1,desc:'',color:S.markColor});
+    var vertical=Math.abs(e.clientY-drag.cy0)>Math.abs(e.clientX-drag.cx0);
+    if(vertical){
+      if((y2-y1)<1.5)return;
+      S.tmp.push({type:'measure',dir:'v',x1:p.x,y1:y1,x2:p.x,y2:y2,n:S.tmp.length+1,desc:'',color:S.markColor});
+    }else{
+      if((x2-x1)<1.5)return;
+      S.tmp.push({type:'measure',dir:'h',x1:x1,y1:p.y,x2:x2,y2:p.y,n:S.tmp.length+1,desc:'',color:S.markColor});
+    }
   }else{
     if((x2-x1)<1.5||(y2-y1)<1.5)return;
     S.tmp.push({type:'box',x1:x1,y1:y1,x2:x2,y2:y2,n:S.tmp.length+1,desc:'',color:S.markColor});
@@ -912,7 +1008,11 @@ function renderR(){
   syncMarkLayer();
   document.getElementById('clayer').innerHTML=S.tmp.map(function(r,i){
     if(r.type==='measure'){
-      return '<div class="cruler cregion" style="left:'+r.x1+'%;top:'+r.y1+'%;width:'+(r.x2-r.x1)+'%;color:'+markColor(r)+'">'+
+      var isV=r.dir==='v';
+      var mstyle=isV
+        ?'left:'+r.x1+'%;top:'+r.y1+'%;width:18px;height:'+(r.y2-r.y1)+'%;color:'+markColor(r)
+        :'left:'+r.x1+'%;top:'+r.y1+'%;width:'+(r.x2-r.x1)+'%;height:18px;color:'+markColor(r);
+      return '<div class="cruler cregion'+(isV?' v':'')+'" style="'+mstyle+'">'+
         '<div class="cruler-line"></div><div class="crlabel" style="background:'+markColor(r)+'">'+r.n+'</div>'+
         '<button class="crdel" onclick="delR(event,'+i+')">&#10005;</button></div>';
     }
@@ -1184,7 +1284,14 @@ function secHTML(label,dotCls,text,img,regions,opts){
 function imgHTML(img,regions,caption,clickAttr){
   var dots=(regions||[]).map(function(r){
     if(r.type==='measure'){
-      return '<div class="sruler" style="left:'+r.x1+'%;top:'+r.y1+'%;width:'+(r.x2-r.x1)+'%;color:'+markColor(r)+'"><div class="sruler-line"></div><div class="rlabel" style="left:50%;top:-7px;transform:translateX(-50%);background:'+markColor(r)+'">'+r.n+'</div></div>';
+      var isV=r.dir==='v';
+      var mstyle=isV
+        ?'left:'+r.x1+'%;top:'+r.y1+'%;width:18px;height:'+(r.y2-r.y1)+'%;color:'+markColor(r)
+        :'left:'+r.x1+'%;top:'+r.y1+'%;width:'+(r.x2-r.x1)+'%;color:'+markColor(r);
+      var lstyle=isV
+        ?'top:50%;left:-1px;transform:translateY(-50%);background:'+markColor(r)
+        :'left:50%;top:-7px;transform:translateX(-50%);background:'+markColor(r);
+      return '<div class="sruler'+(isV?' v':'')+'" style="'+mstyle+'"><div class="sruler-line"></div><div class="rlabel" style="'+lstyle+'">'+r.n+'</div></div>';
     }
     return '<div class="rbox" style="left:'+r.x1+'%;top:'+r.y1+'%;width:'+(r.x2-r.x1)+'%;height:'+(r.y2-r.y1)+'%;border-color:'+markColor(r)+';background:'+rgba(markColor(r),.13)+'"><div class="rlabel" style="background:'+markColor(r)+'">'+r.n+'</div></div>';
   }).join('');
@@ -1755,9 +1862,16 @@ function drawCanvasImage(ctx,ox,cy,IW,PAD,F,LW,img,regions){
     var color=markColor(r);
     ctx.strokeStyle=color;ctx.lineWidth=Math.max(2,Math.round(2*F));
     if(r.type==='measure'){
-      var ly=ry, tick=Math.round(14*F);
-      ctx.beginPath();ctx.moveTo(rx,ly);ctx.lineTo(rx+rw,ly);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(rx,ly-tick/2);ctx.lineTo(rx,ly+tick/2);ctx.moveTo(rx+rw,ly-tick/2);ctx.lineTo(rx+rw,ly+tick/2);ctx.stroke();
+      var tick=Math.round(14*F);
+      if(r.dir==='v'){
+        var lx=rx;
+        ctx.beginPath();ctx.moveTo(lx,ry);ctx.lineTo(lx,ry+rh);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(lx-tick/2,ry);ctx.lineTo(lx+tick/2,ry);ctx.moveTo(lx-tick/2,ry+rh);ctx.lineTo(lx+tick/2,ry+rh);ctx.stroke();
+      }else{
+        var ly=ry;
+        ctx.beginPath();ctx.moveTo(rx,ly);ctx.lineTo(rx+rw,ly);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(rx,ly-tick/2);ctx.lineTo(rx,ly+tick/2);ctx.moveTo(rx+rw,ly-tick/2);ctx.lineTo(rx+rw,ly+tick/2);ctx.stroke();
+      }
     }else{
       ctx.fillStyle=rgba(color,.13);
       ctx.fillRect(rx,ry,rw,rh);ctx.strokeRect(rx,ry,rw,rh);
