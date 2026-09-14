@@ -109,7 +109,7 @@ textarea:focus,input[type=text]:focus,input[type=url]:focus,input[type=password]
 .mbtn:hover{border-color:var(--border-strong);color:var(--text);background:var(--surface2)}
 .mbtn.on{border-color:var(--bug-fg);color:var(--bug-fg);background:var(--bug-bg)}
 .mnums{font-weight:700;color:var(--bug-fg)}
-.pf{padding:16px 24px;display:flex;gap:8px;background:var(--surface);position:sticky;bottom:0;z-index:20;box-shadow:0 -1px 3px oklch(0.155 0.060 261 / .05)}
+.card-actions{display:flex;gap:8px}
 .btn1{flex:1;background:var(--accent);color:var(--accent-fg);border:none;border-radius:var(--rl);padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background-color .12s var(--ease)}
 .btn1:hover{background:color-mix(in srgb,var(--accent) 92%,black)}
 .btn1:active{background:color-mix(in srgb,var(--accent) 74%,black)}
@@ -301,7 +301,6 @@ input[type=file]{display:none}
               <input type="text" id="assigneeServer" placeholder="Server 담당자" oninput="persistPromptSettings()">
             </div>
           </div>
-          <div class="sep"></div>
           <div class="fg">
             <label>플랫폼</label>
             <div class="seg" id="platformSeg">
@@ -328,9 +327,7 @@ input[type=file]{display:none}
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="panel-section">
+        <div class="sep"></div>
         <div class="acc-hd" onclick="toggleIssueContent()" style="padding:0">
           <span class="panel-section-title">이슈 내용</span>
           <span class="acc-spacer"></span>
@@ -368,8 +365,7 @@ input[type=file]{display:none}
             <button class="btn2 diffbtn" id="diffViewBtn" onclick="openDiffView()" disabled>&#128269; Diff 보기 (기대결과 vs 이슈)</button>
           </div>
         </div>
-      </div>
-      <div class="panel-section">
+        <div class="sep"></div>
         <div class="fg">
           <label>Jira MCP</label>
           <div class="prompt-actions" style="grid-template-columns:1fr 1fr auto">
@@ -379,11 +375,12 @@ input[type=file]{display:none}
           </div>
           <div class="copy-status" id="copyStatus"></div>
         </div>
+        <div class="sep"></div>
+        <div class="card-actions">
+          <button class="btn2" id="cancelBtn" onclick="cancelEdit()">취소</button>
+          <button class="btn1" id="submitBtn" onclick="submitCard()">카드 저장 &rarr;</button>
+        </div>
       </div>
-    </div>
-    <div class="pf">
-      <button class="btn2" id="cancelBtn" onclick="cancelEdit()">취소</button>
-      <button class="btn1" id="submitBtn" onclick="submitCard()">카드 저장 &rarr;</button>
     </div>
   </aside>
 
