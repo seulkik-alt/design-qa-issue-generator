@@ -56,6 +56,15 @@ body{background:var(--bg);color:var(--text);font-family:"Pretendard Variable",Pr
 .cards-count{font-size:12px;font-weight:600;color:var(--text-hint)}
 .cards-list-scroll{flex:1;overflow-y:auto}
 .cards-empty{color:var(--text-hint);font-size:13px;text-align:center;padding:40px 12px}
+.ccard-row{display:flex;align-items:center;gap:10px;padding:8px;border-radius:var(--rs);cursor:pointer;transition:background-color .12s var(--ease)}
+.ccard-row:hover{background:var(--surface2)}
+.ccard-thumb{width:44px;height:44px;border-radius:8px;overflow:hidden;background:var(--surface2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ccard-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.ccard-thumb-ph{color:var(--text-hint)}
+.ccard-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ccard-top{display:flex;align-items:center;gap:6px}
+.ccard-top .pbadge,.ccard-top .tbadge{font-size:10px;padding:2px 6px;flex-shrink:0}
+.ccard-text{font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Panel */
 .panel{background:var(--bg);display:flex;flex-direction:column;height:100vh;overflow:hidden;position:sticky;top:0;order:2}
@@ -394,6 +403,8 @@ input[type=file]{display:none}
     <div class="cards-panel-hd">
       <span class="panel-section-title">저장된 카드</span>
       <span class="cards-count" id="cardsCount">0개</span>
+      <span class="acc-spacer"></span>
+      <button class="link-btn" onclick="openAllCards()">전체보기</button>
     </div>
     <div class="cards-list-scroll">
       <div id="clist" class="clist"></div>
@@ -528,6 +539,17 @@ input[type=file]{display:none}
       <button class="btng" onclick="closeSelectExport()">취소</button>
       <button class="btn1" style="flex:1" onclick="doExportSelected()">선택 내보내기</button>
     </div>
+  </div>
+</div>
+
+<!-- All cards modal -->
+<div class="backdrop" id="allCardsBd" onclick="allCardsBdClick(event)">
+  <div class="modal" style="width:min(960px,96vw)">
+    <div class="mhdr">
+      <span class="mtitle">저장된 카드 전체보기</span>
+      <button class="mclose" onclick="closeAllCards()">&#10005;</button>
+    </div>
+    <div id="clistModal" class="clist" style="overflow-y:auto;flex:1"></div>
   </div>
 </div>
 
@@ -1513,7 +1535,33 @@ function toggleAcc(id){
 }
 function renderList(){
   updateBottombarCount();
+  renderCompactList();
+  renderFullList();
+}
+function renderCompactList(){
   var el=document.getElementById('clist');
+  if(!S.cards.length){el.innerHTML='<div class="cards-empty">아직 저장된 카드가 없습니다</div>';return;}
+  el.innerHTML=S.cards.map(function(c,i){
+    var items=issueItems(c);
+    var thumbSrc=(items[0]&&items[0].src)||c.eImg||null;
+    var thumb=thumbSrc?'<img src="'+thumbSrc+'">':'<span class="ccard-thumb-ph">&#128203;</span>';
+    var previewText=esc((c.iText||c.eText||'내용 없음').split('\n')[0]);
+    var pl=platLabel(c);
+    var pb=pl?'<span class="pbadge">'+pl+'</span>':'';
+    var tb='<span class="tbadge '+c.type+'">'+(c.type==='bug'?'버그':'개선')+'</span>';
+    return '<div class="ccard-row" onclick="editCard('+i+')">'+
+      '<div class="ccard-thumb">'+thumb+'</div>'+
+      '<div class="ccard-info">'+
+        '<div class="ccard-top"><span class="acc-hd-id">#'+(''+c.id).padStart(3,'0')+'</span>'+pb+tb+'</div>'+
+        '<div class="ccard-text">'+previewText+'</div>'+
+      '</div>'+
+      '<span class="cdel-btn" title="삭제" onclick="event.stopPropagation();delCard('+i+')">&#128465;</span>'+
+    '</div>';
+  }).join('');
+}
+function renderFullList(){
+  var el=document.getElementById('clistModal');
+  if(!el)return;
   if(!S.cards.length){el.innerHTML='<div class="cards-empty">아직 저장된 카드가 없습니다</div>';return;}
   el.innerHTML=S.cards.map(function(c,i){
     var isOpen=!collapsed.has(c.id);
@@ -1524,7 +1572,7 @@ function renderList(){
         '<span class="acc-spacer"></span>'+
         ((issueItems(c).length&&c.eImg)?'<button class="cedit-btn" title="Diff 보기" onclick="event.stopPropagation();openDiffView(S.cards['+i+'])">&#128269;</button>':'')+
         '<button class="cedit-btn" title="내보내기" onclick="event.stopPropagation();exportCard('+i+')">&#128424;</button>'+
-        '<button class="cedit-btn" title="수정" onclick="event.stopPropagation();editCard('+i+')">&#9998;</button>'+
+        '<button class="cedit-btn" title="수정" onclick="event.stopPropagation();editCard('+i+');closeAllCards()">&#9998;</button>'+
         '<span class="cdel-btn" title="삭제" onclick="event.stopPropagation();delCard('+i+')">&#128465;</span>'+
       '</div>'+
       '<div class="acc-body'+(isOpen?'':' closed')+'">'+
@@ -1532,6 +1580,15 @@ function renderList(){
       '</div>'+
     '</div>';
   }).join('');
+}
+function openAllCards(){
+  document.getElementById('allCardsBd').classList.add('open');
+}
+function closeAllCards(){
+  document.getElementById('allCardsBd').classList.remove('open');
+}
+function allCardsBdClick(e){
+  if(e.target===document.getElementById('allCardsBd'))closeAllCards();
 }
 async function exportCard(i){
   await runExportBatch([{data:S.cards[i]}]);
