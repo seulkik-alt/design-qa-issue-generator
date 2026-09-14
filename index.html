@@ -826,6 +826,39 @@ function renderEThumb(){
     '</div>'+
     '</div>';
 }
+function extractImgSrcFromHtml(html){
+  if(!html)return null;
+  try{
+    var doc=new DOMParser().parseFromString(html,'text/html');
+    var img=doc.querySelector('img');
+    return img?img.getAttribute('src'):null;
+  }catch(e){return null;}
+}
+async function urlToDataURL(src){
+  if(!src)return null;
+  if(src.indexOf('data:')===0)return src;
+  var res=await fetch(src,{mode:'cors'});
+  if(!res.ok)throw new Error('이미지 URL 요청 실패 (HTTP '+res.status+')');
+  var blob=await res.blob();
+  return blobToDataURL(blob);
+}
+function applyPastedDataUrl(t,dataUrl,idx){
+  if(t==='i'){
+    if(idx==null){
+      S.iItems.push({src:dataUrl,r:[]});
+    }else{
+      if(!S.iItems[idx])return;
+      S.iItems[idx]={src:dataUrl,r:[]};
+    }
+    S.iImg=S.iItems[0]?S.iItems[0].src:null;
+    S.iR=S.iItems[0]?S.iItems[0].r:[];
+    renderIThumbs();
+  }else{
+    S.eImg=dataUrl;S.eR=[];
+    renderEThumb();
+  }
+  upd();
+}
 async function pasteImageFromClipboard(t,idx,btnEl){
   if(!navigator.clipboard||!navigator.clipboard.read){
     alert('이 브라우저는 클립보드에서 이미지 읽기를 지원하지 않습니다. Chrome 계열 브라우저를 사용해주세요.');
@@ -840,27 +873,34 @@ async function pasteImageFromClipboard(t,idx,btnEl){
       var imgType=clipItems[i].types.find(function(ty){return ty.indexOf('image/')===0;});
       if(imgType)blob=await clipItems[i].getType(imgType);
     }
-    if(!blob){
+    var dataUrl=null;
+    if(blob){
+      dataUrl=await blobToDataURL(blob);
+    }else{
+      // 이미지 바이트 대신 HTML 조각(<img src=...>)만 올라오는 웹앱 대응 (예: Figma 웹 복사)
+      var htmlBlob=null;
+      for(var j=0;j<clipItems.length&&!htmlBlob;j++){
+        if(clipItems[j].types.indexOf('text/html')!==-1)htmlBlob=await clipItems[j].getType('text/html');
+      }
+      if(htmlBlob){
+        var htmlText=await htmlBlob.text();
+        var imgSrc=extractImgSrcFromHtml(htmlText);
+        if(imgSrc){
+          try{
+            dataUrl=await urlToDataURL(imgSrc);
+          }catch(convErr){
+            alert('클립보드 HTML 안의 이미지 링크는 찾았지만 가져오지 못했습니다 (교차 출처 제한일 수 있음): '+convErr.message);
+            return;
+          }
+        }
+      }
+    }
+    if(!dataUrl){
       var typesMsg=seenTypes.length?seenTypes.join(', '):'(감지된 형식 없음)';
       alert('클립보드에 이미지가 없습니다. 먼저 이미지를 복사해주세요.\n\n감지된 클립보드 형식: '+typesMsg+'\n\n※ 파인더에서 파일을 복사(⌘C)한 경우 파일 참조만 올라가서 이미지로 인식되지 않습니다. 웹에서 이미지를 우클릭 → "이미지 복사"로 복사했는지 확인해주세요.');
       return;
     }
-    var dataUrl=await blobToDataURL(blob);
-    if(t==='i'){
-      if(idx==null){
-        S.iItems.push({src:dataUrl,r:[]});
-      }else{
-        if(!S.iItems[idx])return;
-        S.iItems[idx]={src:dataUrl,r:[]};
-      }
-      S.iImg=S.iItems[0]?S.iItems[0].src:null;
-      S.iR=S.iItems[0]?S.iItems[0].r:[];
-      renderIThumbs();
-    }else{
-      S.eImg=dataUrl;S.eR=[];
-      renderEThumb();
-    }
-    upd();
+    applyPastedDataUrl(t,dataUrl,idx);
   }catch(err){
     if(err.name==='NotAllowedError'){
       alert('클립보드 읽기 권한이 거부되었습니다. 브라우저 주소창의 자물쇠(사이트 설정) 아이콘에서 클립보드 권한을 허용하거나, 페이지를 한 번 클릭해 포커스를 준 뒤 다시 시도해주세요.');
