@@ -1474,13 +1474,10 @@ function renderList(){
   if(!S.cards.length){el.innerHTML='';return;}
   el.innerHTML=S.cards.map(function(c,i){
     var isOpen=!collapsed.has(c.id);
-    var pl=platLabel(c);
-    var pb=pl?'<span class="pbadge" style="font-size:10px;padding:2px 8px">'+pl+'</span>':'';
-    var tb='<span class="tbadge '+c.type+'" style="font-size:10px;padding:2px 8px">'+(c.type==='bug'?'&#128027; 버그':'&#10024; 개선')+'</span>';
     return '<div class="acc-item">'+
       '<div class="acc-hd" onclick="toggleAcc('+c.id+')">'+
         '<span class="acc-arrow'+(isOpen?'':' closed')+'">&#9660;</span>'+
-        '<span class="acc-hd-id">#'+(''+c.id).padStart(3,'0')+'</span>'+pb+tb+
+        '<span class="acc-hd-id">#'+(''+c.id).padStart(3,'0')+'</span>'+
         '<span class="acc-spacer"></span>'+
         ((issueItems(c).length&&c.eImg)?'<button class="cedit-btn" onclick="event.stopPropagation();openDiffView(S.cards['+i+'])">&#128269; Diff 보기</button>':'')+
         '<button class="cedit-btn" onclick="event.stopPropagation();exportCard('+i+')" style="margin-left:6px">&#128424; 내보내기</button>'+
