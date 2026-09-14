@@ -175,12 +175,12 @@ input[type=file]{display:none}
 .di{background:var(--bug-fg)}.de{background:var(--success)}
 .stext{font-size:13px;color:var(--text);line-height:1.55;white-space:pre-wrap;min-height:24px}
 .stext.empty{color:var(--text-hint);font-style:italic}
-.simgw{margin-top:12px;border-radius:8px;overflow:hidden;border:none;position:relative;background:#F0F0F0;box-shadow:var(--product-shadow)}
+.simgw{width:fit-content;max-width:100%;margin:12px auto 0;border-radius:8px;overflow:hidden;border:none;position:relative;background:#F0F0F0;box-shadow:var(--product-shadow)}
 .simgw.markable{cursor:pointer}
 .simgw.markable::after{content:"클릭해서 마킹";position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.58);color:#fff;border-radius:20px;padding:4px 9px;font-size:11px;font-weight:600;opacity:.86;pointer-events:none}
 .simgw.markable:hover::after{opacity:1}
 .simgcap{margin-top:12px;font-size:10px;font-weight:600;color:var(--text-hint);letter-spacing:.04em}
-.simg{width:100%;display:block;height:auto}
+.simg{display:block;max-width:100%;max-height:480px;width:auto;height:auto}
 .mlayer{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none}
 .rbox{position:absolute;border:2px solid var(--mc);background:var(--mf);pointer-events:none}
 .rlabel{position:absolute;top:-9px;left:-1px;background:var(--mc);color:#fff;font-size:10px;font-weight:700;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;pointer-events:none}
