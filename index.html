@@ -68,11 +68,11 @@ body{background:var(--bg);color:var(--text);font-family:"Pretendard Variable",Pr
 
 /* Panel */
 .panel{background:var(--bg);display:flex;flex-direction:column;height:100vh;overflow:hidden;position:sticky;top:0;order:2}
-.pb{padding:20px 24px;display:flex;flex-direction:column;gap:20px;flex:1;overflow-y:auto}
+.pb{padding:20px 24px 0;display:flex;flex-direction:column;gap:20px;flex:1;overflow-y:auto}
 .fg{display:flex;flex-direction:column;gap:6px}
 label{font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:.02em}
 .panel-section-title{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.01em}
-.panel-section{border:none;border-radius:var(--rm);background:var(--surface);box-shadow:var(--shadow-1);padding:14px;display:flex;flex-direction:column;gap:24px}
+.panel-section{border:none;border-radius:var(--rm) var(--rm) 0 0;background:var(--surface);box-shadow:var(--shadow-1);padding:14px;display:flex;flex-direction:column;gap:24px}
 textarea,input[type=text],input[type=url],input[type=password]{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:9px 12px;font-size:13px;color:var(--text);font-family:inherit;width:100%;line-height:1.5;transition:border-color .15s,box-shadow .15s}
 textarea::placeholder,input[type=text]::placeholder,input[type=url]::placeholder,input[type=password]::placeholder{color:var(--text-placeholder);opacity:1}
 textarea{resize:none;min-height:72px}
@@ -125,7 +125,7 @@ textarea:focus,input[type=text]:focus,input[type=url]:focus,input[type=password]
 .mbtn:hover{border-color:var(--border-strong);color:var(--text);background:var(--surface2)}
 .mbtn.on{border-color:var(--bug-fg);color:var(--bug-fg);background:var(--bug-bg)}
 .mnums{font-weight:700;color:var(--bug-fg)}
-.card-actions{display:flex;gap:8px}
+.card-actions{display:flex;gap:8px;flex-shrink:0;margin:0 24px;padding:14px 14px 20px;background:var(--surface);border-radius:0 0 var(--rm) var(--rm);box-shadow:0 2px 3px oklch(0.155 0.060 261 / .05)}
 .btn1{flex:1;background:var(--accent);color:var(--accent-fg);border:none;border-radius:var(--rl);padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background-color .12s var(--ease)}
 .btn1:hover{background:color-mix(in srgb,var(--accent) 92%,black)}
 .btn1:active{background:color-mix(in srgb,var(--accent) 74%,black)}
@@ -390,12 +390,11 @@ input[type=file]{display:none}
           </div>
           <div class="copy-status" id="copyStatus"></div>
         </div>
-        <div class="sep"></div>
-        <div class="card-actions">
-          <button class="btn2" id="cancelBtn" onclick="cancelEdit()">취소</button>
-          <button class="btn1" id="submitBtn" onclick="submitCard()">카드 저장 &rarr;</button>
-        </div>
       </div>
+    </div>
+    <div class="card-actions">
+      <button class="btn2" id="cancelBtn" onclick="cancelEdit()">취소</button>
+      <button class="btn1" id="submitBtn" onclick="submitCard()">카드 저장 &rarr;</button>
     </div>
   </aside>
 
