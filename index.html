@@ -46,12 +46,20 @@
   --border-card:color-mix(in srgb,var(--border) 70%,white); /* 30% lighter, card-internal dividers */
   --surface2-light:color-mix(in srgb,var(--surface2) 70%,white); /* 30% lighter, photo attach area */
   --mc:#FF3333;--mf:rgba(255,51,51,.13);
+  --cards-w:320px;
 }
 body{background:var(--bg);color:var(--text);font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Apple SD Gothic Neo","Noto Sans KR",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
-.layout{display:grid;grid-template-columns:320px 1fr 420px;min-height:100vh}
+.layout{display:grid;grid-template-columns:var(--cards-w) 3px 1fr 420px;min-height:100vh}
+
+/* Column resizer (between cards panel and preview) */
+.col-resizer{order:1;position:relative;cursor:col-resize;background:transparent;z-index:5}
+.col-resizer::after{content:"";position:absolute;top:0;bottom:0;left:1px;width:1px;border-radius:1px;background:var(--border);transition:background-color .12s}
+.col-resizer:hover::after,.col-resizer.dragging::after{background:var(--border-strong)}
+body.col-resizing{cursor:col-resize;user-select:none}
+body.col-resizing .col-resizer::after{background:var(--accent)}
 
 /* Cards panel (left) */
-.cards-panel{background:var(--bg);display:flex;flex-direction:column;height:100vh;overflow:hidden;position:sticky;top:0;order:0;padding:20px 16px}
+.cards-panel{background:var(--bg);display:flex;flex-direction:column;height:100vh;overflow:hidden;position:sticky;top:0;order:0;padding:20px 16px;min-width:0}
 .cards-panel-hd{display:flex;align-items:baseline;gap:8px;margin-bottom:16px;flex-shrink:0}
 .cards-count{font-size:12px;font-weight:600;color:var(--text-hint)}
 .cards-list-scroll{flex:1;overflow-y:auto}
@@ -67,7 +75,7 @@ body{background:var(--bg);color:var(--text);font-family:"Pretendard Variable",Pr
 .ccard-text{font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Panel */
-.panel{background:var(--bg);display:flex;flex-direction:column;height:100vh;overflow:hidden;position:sticky;top:0;order:2}
+.panel{background:var(--bg);display:flex;flex-direction:column;height:100vh;overflow:hidden;position:sticky;top:0;order:3}
 .pb{padding:20px 24px 0;display:flex;flex-direction:column;gap:20px;flex:1;overflow-y:auto}
 .fg{display:flex;flex-direction:column;gap:6px}
 label{font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:.02em}
@@ -142,7 +150,7 @@ textarea:focus,input[type=text]:focus,input[type=url]:focus,input[type=password]
 input[type=file]{display:none}
 
 /* Main area */
-.parea{padding:28px 32px;display:flex;flex-direction:column;gap:24px;background:var(--bg);order:1}
+.parea{padding:28px 32px;display:flex;flex-direction:column;gap:24px;background:var(--bg);order:2;min-width:0}
 .ptbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .plabel{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-hint)}
 
@@ -409,6 +417,8 @@ input[type=file]{display:none}
       <div id="clist" class="clist"></div>
     </div>
   </aside>
+
+  <div class="col-resizer" id="colResizer" title="드래그해서 너비 조절 · 더블클릭하면 기본값으로"></div>
 
   <main class="parea">
     <div class="ptbar">
@@ -2030,6 +2040,50 @@ function drawCanvasImage(ctx,ox,cy,IW,PAD,F,LW,img,regions){
   return cy+ih;
 }
 
+/* ── Cards panel width resizer ── */
+var CARDS_W_MIN=220,CARDS_W_MAX=560,CARDS_W_DEFAULT=320;
+function setCardsWidth(w,persistIt){
+  w=Math.max(CARDS_W_MIN,Math.min(CARDS_W_MAX,Math.round(w)));
+  document.documentElement.style.setProperty('--cards-w',w+'px');
+  if(persistIt){
+    try{localStorage.setItem('kream-qa-cardsw-v1',String(w));}catch(e){}
+  }
+  return w;
+}
+function loadCardsWidth(){
+  try{
+    var w=parseInt(localStorage.getItem('kream-qa-cardsw-v1'),10);
+    if(w)setCardsWidth(w,false);
+  }catch(e){}
+}
+function initColResizer(){
+  var handle=document.getElementById('colResizer');
+  if(!handle)return;
+  var dragging=false,startX=0,startW=CARDS_W_DEFAULT;
+  handle.addEventListener('mousedown',function(e){
+    dragging=true;startX=e.clientX;
+    startW=document.querySelector('.cards-panel').getBoundingClientRect().width;
+    handle.classList.add('dragging');
+    document.body.classList.add('col-resizing');
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove',function(e){
+    if(!dragging)return;
+    setCardsWidth(startW+(e.clientX-startX),false);
+  });
+  window.addEventListener('mouseup',function(){
+    if(!dragging)return;
+    dragging=false;
+    handle.classList.remove('dragging');
+    document.body.classList.remove('col-resizing');
+    var cur=document.querySelector('.cards-panel').getBoundingClientRect().width;
+    setCardsWidth(cur,true);
+  });
+  handle.addEventListener('dblclick',function(){
+    setCardsWidth(CARDS_W_DEFAULT,true);
+  });
+}
+
 /* ── Init ── */
 window.addEventListener('beforeunload',function(e){
   if(hasDraftContent(getData())){
@@ -2039,6 +2093,8 @@ window.addEventListener('beforeunload',function(e){
 });
 loadPersisted();
 loadDraft();
+loadCardsWidth();
+initColResizer();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script type="module">
