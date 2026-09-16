@@ -1663,7 +1663,7 @@ function platformKey(d){
 function issueTypeKey(d){return d.type==='bug'?'bug':'improvement';}
 function issueLabel(d){return d.type==='bug'?'QA_Bug':'QA_개선';}
 function issueDescription(d){
-  return ['이슈',d.iText||'-','','기대결과',d.eText||'-'].join('\n');
+  return ['*[이슈]*',d.iText||'-','','*[기대결과]*',d.eText||'-'].join('\n');
 }
 function todayStr(){
   var dt=new Date();
