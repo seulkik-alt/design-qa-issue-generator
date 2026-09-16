@@ -1265,7 +1265,7 @@ function buildJiraPrompt(d){
     '제목과 구성요소에는 선택한 플랫폼을 그대로 사용해줘.',
     '제목은 이슈 재현, 기대 결과, 첨부 이미지를 보고 간결하게 요약해서 지어줘.',
     '레이블은 그대로 사용해줘 (버그는 QA_Bug, 개선은 QA_개선).',
-    '설명은 아래처럼 "이슈"/"기대결과" 두 줄바꿈 헤더로만 구성하고, 마크업이나 대괄호는 쓰지 마.',
+    '설명 안의 모든 섹션 제목은 예외 없이 *[제목]* 형식(대괄호+볼드)으로 통일해줘 — 아래 템플릿의 *[이슈]*, *[기대결과]*처럼. 이슈 내용을 재현 경로/현상 등으로 더 세분화해서 정리하더라도 그 하위 제목들에도 동일한 *[제목]* 형식을 유지해줘.',
     '이미지 첨부가 MCP로 바로 안 되면 어떤 파일을 첨부해야 하는지 알려줘.',
     '',
     '제목 : ['+(platform||'플랫폼')+'][디자인QA] {이슈 내용을 요약한 제목}',
@@ -1275,10 +1275,10 @@ function buildJiraPrompt(d){
     '첨부파일 : 해당 Issue 이미지 첨부',
     '설명 (아래 내용 그대로 사용) :',
     '',
-    '이슈',
+    '*[이슈]*',
     d.iText||'-',
     '',
-    '기대결과',
+    '*[기대결과]*',
     d.eText||'-'
   ];
   return body.join('\n');
@@ -1291,7 +1291,7 @@ function buildJiraPromptJSON(d,filenameOverride){
   var issueImageCount=items.length||0;
   var expectedImageCount=d.eImg?1:0;
   var predictedFilename=filenameOverride||((d.platform||d.type)?makeFilename(d,d.id||1):'');
-  var description='이슈\n'+(d.iText||'-')+'\n\n기대결과\n'+(d.eText||'-');
+  var description='*[이슈]*\n'+(d.iText||'-')+'\n\n*[기대결과]*\n'+(d.eText||'-');
   var obj={
     id:d.id||null,
     instruction:'아래 상위 티켓의 하위 부작업(Sub-task)으로 디자인 QA 티켓을 생성해줘. issue_image_count가 1보다 크면 이미지별로 각각 별도 티켓을 생성해줘. 실제로 생성하기 전에 만들 티켓 목록(제목/담당자/레이블)을 먼저 보여주고 확인받은 다음 진행해줘.',
@@ -1304,7 +1304,7 @@ function buildJiraPromptJSON(d,filenameOverride){
     components:platform||null,
     title_template:'['+(platform||'플랫폼')+'][디자인QA] {이슈 내용을 요약한 제목}',
     description_template:description,
-    description_note:'설명은 description_template처럼 "이슈"/"기대결과" 줄바꿈 헤더만 쓰고, 마크업(굵게 등)이나 대괄호는 쓰지 마.',
+    description_note:'설명 안의 모든 섹션 제목은 description_template의 *[이슈]*, *[기대결과]*처럼 예외 없이 *[제목]* 형식(대괄호+볼드)으로 통일해줘. 이슈 내용을 재현 경로/현상 등으로 더 세분화해서 정리하더라도 그 하위 제목들에도 동일한 형식을 유지해줘.',
     issue_reproduction:d.iText||'',
     expected_result:d.eText||'',
     issue_image_count:issueImageCount,
