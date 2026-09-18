@@ -196,7 +196,7 @@ input[type=file]{display:none}
 .stext.empty{color:var(--text-hint);font-style:italic}
 .stext.editable{cursor:text;border-radius:6px;padding:4px 6px;margin:-4px -6px;transition:background .12s}
 .stext.editable:hover{background:var(--surface2)}
-.stext-edit{width:100%;box-sizing:border-box;font:inherit;font-size:13px;color:var(--text);line-height:1.55;background:var(--surface);border:1px solid var(--accent);border-radius:6px;padding:8px 10px;resize:vertical;min-height:64px;font-family:inherit}
+.stext-edit{width:100%;box-sizing:border-box;font:inherit;font-size:13px;color:var(--text);line-height:1.55;background:var(--surface);border:1px solid var(--accent);border-radius:6px;padding:8px 10px;resize:none;overflow:hidden;min-height:24px;font-family:inherit;white-space:pre-wrap}
 .simg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-top:12px}
 .simg-item .simgw{width:100%;margin-top:8px}
 .simg-item .simgcap{margin-top:0}
@@ -1437,7 +1437,7 @@ function secHTML(label,dotCls,text,items,opts){
   var isLive=!!(opts&&opts.cardIdx===null);
   var t;
   if(isLive&&liveEditingSection===opts.section){
-    t='<textarea class="stext-edit" id="liveEdit'+opts.section+'" oninput="onLiveEditInput(\''+opts.section+'\',this.value)" onblur="commitInlineEdit(\''+opts.section+'\')">'+esc(text||'')+'</textarea>';
+    t='<textarea class="stext-edit" id="liveEdit'+opts.section+'" oninput="onLiveEditInput(\''+opts.section+'\',this.value,this)" onblur="commitInlineEdit(\''+opts.section+'\')">'+esc(text||'')+'</textarea>';
   }else{
     var editAttr=isLive?' onclick="event.stopPropagation();startInlineEdit(\''+opts.section+'\')"':'';
     var editCls=isLive?' editable':'';
@@ -1552,15 +1552,20 @@ function upd(){
   el.innerHTML=cardHTML(d,null);
   if(liveEditingSection){
     var ta=document.getElementById('liveEdit'+liveEditingSection);
-    if(ta){ta.focus();ta.selectionStart=ta.selectionEnd=ta.value.length;}
+    if(ta){ta.focus();ta.selectionStart=ta.selectionEnd=ta.value.length;autoResizeTA(ta);}
   }
+}
+function autoResizeTA(el){
+  el.style.height='auto';
+  el.style.height=el.scrollHeight+'px';
 }
 function startInlineEdit(section){
   liveEditingSection=section;
   upd();
 }
-function onLiveEditInput(section,value){
+function onLiveEditInput(section,value,el){
   document.getElementById(section==='i'?'itext':'etext').value=value;
+  autoResizeTA(el);
   schedulePersistDraft();
 }
 function commitInlineEdit(section){
