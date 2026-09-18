@@ -104,6 +104,7 @@ textarea:focus,input[type=text]:focus,input[type=url]:focus,input[type=password]
 .upload{border:1px dashed var(--border-strong);border-radius:var(--r);padding:11px;cursor:pointer;transition:all .15s;background:var(--surface2-light);min-height:auto;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 .link-btn{background:none;border:none;padding:0;margin:0;font-size:12px;font-weight:600;color:var(--text-muted);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-family:inherit;transition:color .12s;flex-shrink:0}
 .link-btn:hover{color:var(--text)}
+.link-btn-danger:hover{color:#CC2929}
 .upload:hover{border-color:var(--text-muted);background:var(--surface)}
 .upload:focus{outline:none;border-color:var(--accent-focus);box-shadow:0 0 0 .5px var(--accent-focus)}
 .upload.has{border-style:solid;padding:0;min-height:unset;cursor:default}
@@ -193,6 +194,12 @@ input[type=file]{display:none}
 .di{background:var(--bug-fg)}.de{background:var(--success)}
 .stext{font-size:13px;color:var(--text);line-height:1.55;white-space:pre-wrap;min-height:24px}
 .stext.empty{color:var(--text-hint);font-style:italic}
+.stext.editable{cursor:text;border-radius:6px;padding:4px 6px;margin:-4px -6px;transition:background .12s}
+.stext.editable:hover{background:var(--surface2)}
+.stext-edit{width:100%;box-sizing:border-box;font:inherit;font-size:13px;color:var(--text);line-height:1.55;background:var(--surface);border:1px solid var(--accent);border-radius:6px;padding:8px 10px;resize:vertical;min-height:64px;font-family:inherit}
+.simg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-top:12px}
+.simg-item .simgw{width:100%;margin-top:8px}
+.simg-item .simgcap{margin-top:0}
 .simgw{width:fit-content;max-width:100%;margin:12px auto 0;border-radius:8px;overflow:hidden;border:none;position:relative;background:#F0F0F0;box-shadow:var(--product-shadow)}
 .simgw.markable{cursor:pointer}
 .simgw.markable::after{content:"클릭해서 마킹";position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.58);color:#fff;border-radius:20px;padding:4px 9px;font-size:11px;font-weight:600;opacity:.86;pointer-events:none}
@@ -243,12 +250,19 @@ input[type=file]{display:none}
 .mtitle{font-size:14px;font-weight:600}
 .mclose{background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-muted);line-height:1;padding:2px 6px}
 .mhint{font-size:12px;color:var(--text-hint);padding:8px 12px;background:var(--surface2);border-radius:var(--rs)}
-.mtools{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;row-gap:8px;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--rs);background:var(--surface2)}
-.mode-toggle{display:flex;gap:6px}
-.mode-btn{border:1px solid var(--border);background:var(--surface);border-radius:var(--rs);padding:6px 10px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer}
-.mode-btn.active{background:var(--surface);border-color:var(--accent);color:var(--accent)}
-.color-tool{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-muted);font-weight:600}
-.color-tool input{width:30px;height:26px;border:none;background:transparent;padding:0;cursor:pointer}
+.mtools{display:flex;align-items:flex-end;flex-wrap:wrap;row-gap:12px;column-gap:20px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);background:var(--surface2)}
+.mtool-group{display:flex;flex-direction:column;gap:5px}
+.mtool-label{font-size:10px;font-weight:700;color:var(--text-hint);text-transform:uppercase;letter-spacing:.03em}
+.seg2{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:2px;gap:2px}
+.seg2-item{border:none;background:transparent;border-radius:calc(var(--rs) - 2px);padding:6px 12px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer}
+.seg2-item.active{background:var(--accent);color:#fff}
+.chip-toggles{display:flex;gap:6px}
+.chip-toggle{display:flex;align-items:center;gap:4px;border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:6px 12px 6px 10px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer}
+.chip-toggle .chip-check{display:none;font-size:10px;color:var(--accent)}
+.chip-toggle.active{border-color:var(--accent);color:var(--accent);background:var(--surface)}
+.chip-toggle.active .chip-check{display:inline}
+.color-tool{display:flex;align-items:center}
+.color-tool input{width:30px;height:30px;border:1px solid var(--border);border-radius:var(--rs);background:var(--surface);padding:2px;cursor:pointer}
 .cwrap{position:relative;border-radius:8px;overflow:auto;border:1px solid var(--border);background:#F0F0F0;cursor:crosshair;user-select:none;flex:1;min-height:220px}
 .cimg{width:100%;display:block;pointer-events:none;user-select:none}
 .clayer{position:absolute;left:0;top:0;width:100%;height:100%}
@@ -278,10 +292,12 @@ input[type=file]{display:none}
 .ghost.measure.v::after{content:"";position:absolute;left:2px;right:auto;top:0;bottom:0;width:14px;height:auto;border-left:none;border-right:none;border-top:2px dashed currentColor;border-bottom:2px dashed currentColor}
 .rdesc{display:flex;flex-direction:column;gap:8px}
 .rdesc-empty{font-size:12px;color:var(--text-hint);padding:10px 12px;background:var(--surface2);border-radius:var(--rs)}
-.rdesc-row{display:grid;grid-template-columns:24px 1fr;align-items:center;gap:8px}
-.rdesc-num{width:22px;height:22px;border-radius:50%;background:var(--mc);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.rdesc-row{display:grid;grid-template-columns:24px 1fr 22px;align-items:center;gap:8px}
+.rdesc-num{width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;box-sizing:border-box;flex-shrink:0}
 .rdesc-input{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:8px 10px;font-size:12px;color:var(--text);font-family:inherit;width:100%;transition:border-color .15s,box-shadow .15s}
 .rdesc-input:focus{outline:2px solid var(--accent-focus);outline-offset:1px;border-color:var(--border-strong);background:var(--surface)}
+.rdesc-del{width:22px;height:22px;border:none;border-radius:50%;background:var(--surface2);color:var(--text-muted);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rdesc-del:hover{background:#FFE5E5;color:#CC2929}
 .mactions{display:flex;gap:8px;flex-shrink:0}
 
 /* Bottom action bar */
@@ -413,6 +429,7 @@ input[type=file]{display:none}
       <span class="cards-count" id="cardsCount">0개</span>
       <span class="acc-spacer"></span>
       <button class="link-btn" onclick="openAllCards()">전체보기</button>
+      <button class="link-btn link-btn-danger" onclick="delAllCards()">전체 삭제</button>
     </div>
     <div class="cards-list-scroll">
       <div id="clist" class="clist"></div>
@@ -515,16 +532,25 @@ input[type=file]{display:none}
     </div>
     <div class="mhint">&#128432; 드래그해서 영역 지정 &nbsp;&middot;&nbsp; 영역에 마우스 올리면 삭제 버튼이 나타납니다</div>
     <div class="mtools">
-      <div class="mode-toggle">
-        <button class="mode-btn active" id="modeBox" onclick="setMarkMode('box')">영역</button>
-        <button class="mode-btn" id="modeMeasure" onclick="setMarkMode('measure')">간격</button>
+      <div class="mtool-group">
+        <span class="mtool-label">그리기</span>
+        <div class="seg2">
+          <button class="seg2-item active" id="modeBox" onclick="setMarkMode('box')" title="드래그해서 사각 영역 지정">&#9633; 영역</button>
+          <button class="seg2-item" id="modeMeasure" onclick="setMarkMode('measure')" title="드래그해서 간격(치수선) 지정">&#8596; 간격</button>
+        </div>
       </div>
-      <div class="mode-toggle">
-        <button class="mode-btn active" id="toggleShowNum" onclick="toggleShowNum()" title="새로 그리는 영역에 번호 표시">번호</button>
-        <button class="mode-btn active" id="toggleBorder" onclick="toggleBorder()" title="새로 그리는 영역에 테두리 표시">테두리</button>
-        <button class="mode-btn active" id="toggleFill" onclick="toggleFill()" title="새로 그리는 영역 안쪽을 채우기">채우기</button>
+      <div class="mtool-group">
+        <span class="mtool-label">새 영역 표시</span>
+        <div class="chip-toggles">
+          <button class="chip-toggle active" id="toggleShowNum" onclick="toggleShowNum()" title="새로 그리는 영역에 번호 배지 표시"><span class="chip-check">&#10003;</span>번호</button>
+          <button class="chip-toggle active" id="toggleBorder" onclick="toggleBorder()" title="새로 그리는 영역에 테두리 선 표시"><span class="chip-check">&#10003;</span>테두리</button>
+          <button class="chip-toggle active" id="toggleFill" onclick="toggleFill()" title="새로 그리는 영역 안쪽을 색으로 채우기"><span class="chip-check">&#10003;</span>채우기</button>
+        </div>
       </div>
-      <label class="color-tool">컬러 <input type="color" id="markColor" value="#FF3333" oninput="setMarkColor(this.value)"></label>
+      <div class="mtool-group">
+        <span class="mtool-label">색상</span>
+        <label class="color-tool"><input type="color" id="markColor" value="#FF3333" oninput="setMarkColor(this.value)"></label>
+      </div>
     </div>
     <div class="cwrap" id="cwrap">
       <img class="cimg" id="cimg" src="" draggable="false">
@@ -589,6 +615,7 @@ var _exportDirHandle=null;
 var collapsed=new Set();
 var selectedIds=new Set();
 var drag={on:false,x0:0,y0:0,cx0:0,cy0:0,g:null};
+var liveEditingSection=null;
 var _pmReadyResolve;
 var pmReady=new Promise(function(res){_pmReadyResolve=res;});
 if(window.pixelmatch)_pmReadyResolve();
@@ -1141,10 +1168,15 @@ function renderRDesc(){
     return;
   }
   el.innerHTML=S.tmp.map(function(r,i){
-    var numLabel=r.showNum!==false?(r.n||i+1):'—';
+    var showNum=r.showNum!==false,border=r.border!==false,fill=r.fill!==false;
+    var color=markColor(r);
+    var numLabel=showNum?(r.n||i+1):'';
+    var iconStyle='border:'+(border?'2px solid '+color:'1px dashed '+color)+';'+
+      'background:'+(fill?rgba(color,.18):'transparent')+';color:'+color;
     return '<div class="rdesc-row">'+
-      '<span class="rdesc-num">'+numLabel+'</span>'+
-      '<input class="rdesc-input" value="'+escAttr(r.desc||'')+'" placeholder="'+numLabel+'번 영역 설명" oninput="setRDesc('+i+',this.value)">'+
+      '<span class="rdesc-num" style="'+iconStyle+'">'+numLabel+'</span>'+
+      '<input class="rdesc-input" value="'+escAttr(r.desc||'')+'" placeholder="'+(numLabel||'무번호')+' 영역 설명" oninput="setRDesc('+i+',this.value)">'+
+      '<button class="rdesc-del" onclick="delR(event,'+i+')" title="이 영역 삭제">&#10005;</button>'+
       '</div>';
   }).join('');
 }
@@ -1199,6 +1231,7 @@ function trailingMarkDescs(text){
   return out;
 }
 function hydrateDescFromText(t){
+  if(itemsFor(t).length>1)return; // 이미지별로 묶인 텍스트는 역파싱하지 않음 (아래 syncTextWithMarks 참고)
   var descs=trailingMarkDescs(textareaFor(t).value);
   if(!descs.length)return;
   S.tmp.forEach(function(r,i){
@@ -1207,18 +1240,24 @@ function hydrateDescFromText(t){
 }
 function stripTrailingMarkLines(text){
   var lines=(text||'').replace(/\s+$/,'').split('\n'),changed=false;
-  while(lines.length&&/^\s*\d+\.\s*/.test(lines[lines.length-1])){
-    lines.pop();changed=true;
+  while(lines.length){
+    var last=lines[lines.length-1].trim();
+    if(last===''||/^\d+\.\s*/.test(last)||/^\[이미지\s*\d+\]$/.test(last)){
+      lines.pop();changed=true;
+    }else break;
   }
-  if(changed&&lines.length&&lines[lines.length-1].trim()==='')lines.pop();
   return lines.join('\n');
 }
 function syncTextWithMarks(t){
-  var el=textareaFor(t),regions=[];
-  itemsFor(t).forEach(function(item){(item.r||[]).forEach(function(r){if(r.showNum!==false)regions.push(r);});});
+  var el=textareaFor(t),items=itemsFor(t),multi=items.length>1,blocks=[];
+  items.forEach(function(item,idx){
+    var regions=(item.r||[]).filter(function(r){return r.showNum!==false;});
+    if(!regions.length)return;
+    var lines=regions.map(function(r,i){return (r.n||i+1)+'. '+(r.desc||'');});
+    blocks.push((multi?'[이미지 '+(idx+1)+']\n':'')+lines.join('\n'));
+  });
   var base=stripTrailingMarkLines(el.value);
-  var lines=regions.map(function(r,i){return (i+1)+'. '+(r.desc||'');});
-  el.value=base+(base&&lines.length?'\n':'')+lines.join('\n');
+  el.value=base+(base&&blocks.length?'\n':'')+blocks.join('\n\n');
 }
 
 /* ── Jira prompt ── */
@@ -1395,16 +1434,27 @@ function cardHTML(d,id,cardIdx){
     '</div>';
 }
 function secHTML(label,dotCls,text,items,opts){
-  var t=text?'<div class="stext">'+esc(text)+'</div>':'<div class="stext empty">내용을 입력하세요</div>';
+  var isLive=!!(opts&&opts.cardIdx===null);
+  var t;
+  if(isLive&&liveEditingSection===opts.section){
+    t='<textarea class="stext-edit" id="liveEdit'+opts.section+'" oninput="onLiveEditInput(\''+opts.section+'\',this.value)" onblur="commitInlineEdit(\''+opts.section+'\')">'+esc(text||'')+'</textarea>';
+  }else{
+    var editAttr=isLive?' onclick="event.stopPropagation();startInlineEdit(\''+opts.section+'\')"':'';
+    var editCls=isLive?' editable':'';
+    t=text?'<div class="stext'+editCls+'"'+editAttr+'>'+esc(text)+'</div>':'<div class="stext empty'+editCls+'"'+editAttr+'>내용을 입력하세요</div>';
+  }
   var lbl='<div class="slabel"><span class="dot '+dotCls+'"></span>'+label+'</div>';
   items=items||[];
   if(!items.length)return lbl+t;
+  var multi=items.length>1;
   var imgs=items.map(function(item,i){
     var clickAttr=(opts&&opts.cardIdx!==null)
       ?'onclick="event.stopPropagation();openCardM('+opts.cardIdx+',\''+opts.section+'\','+i+')"'
       :'onclick="event.stopPropagation();openM(\''+opts.section+'\','+i+')"';
-    return imgHTML(item.src,item.r||[],items.length>1?'이미지 '+(i+1):'',clickAttr);
+    var html=imgHTML(item.src,item.r||[],multi?'이미지 '+(i+1):'',clickAttr);
+    return multi?'<div class="simg-item">'+html+'</div>':html;
   }).join('');
+  if(multi)imgs='<div class="simg-grid">'+imgs+'</div>';
   return lbl+t+imgs;
 }
 function imgHTML(img,regions,caption,clickAttr){
@@ -1500,6 +1550,22 @@ function upd(){
     el.innerHTML='<div class="empty-state"><div class="ei">&#128203;</div><p>작성 중<br>오른쪽에서 이슈를 입력하면<br>카드가 표시됩니다</p></div>';return;
   }
   el.innerHTML=cardHTML(d,null);
+  if(liveEditingSection){
+    var ta=document.getElementById('liveEdit'+liveEditingSection);
+    if(ta){ta.focus();ta.selectionStart=ta.selectionEnd=ta.value.length;}
+  }
+}
+function startInlineEdit(section){
+  liveEditingSection=section;
+  upd();
+}
+function onLiveEditInput(section,value){
+  document.getElementById(section==='i'?'itext':'etext').value=value;
+  schedulePersistDraft();
+}
+function commitInlineEdit(section){
+  if(liveEditingSection===section)liveEditingSection=null;
+  upd();
 }
 
 /* ── Edit ── */
@@ -1622,6 +1688,14 @@ function delCard(i){
   if(S.editIdx===i)cancelEdit();
   collapsed.delete(S.cards[i].id);
   S.cards.splice(i,1);
+  renderList();persist();
+}
+function delAllCards(){
+  if(!S.cards.length)return;
+  if(!confirm('저장된 카드 '+S.cards.length+'개를 모두 삭제할까요? 되돌릴 수 없습니다.'))return;
+  if(S.editIdx!==null)cancelEdit();
+  collapsed.clear();
+  S.cards=[];
   renderList();persist();
 }
 function reset(){
