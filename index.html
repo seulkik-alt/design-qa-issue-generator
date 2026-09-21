@@ -1205,6 +1205,7 @@ function saveM(){
         card.eImg=card.eItems[0]?card.eItems[0].src:null;
         card.eR=card.eItems[0]?card.eItems[0].r:[];
       }
+      syncCardTextWithMarks(card,cm.t);
       renderList();persist();
     }
     S.cardMark=null;
@@ -1248,16 +1249,24 @@ function stripTrailingMarkLines(text){
   }
   return lines.join('\n');
 }
-function syncTextWithMarks(t){
-  var el=textareaFor(t),items=itemsFor(t),multi=items.length>1,blocks=[];
+function buildSyncedMarkText(baseText,items){
+  var multi=items.length>1,blocks=[];
   items.forEach(function(item,idx){
     var regions=(item.r||[]).filter(function(r){return r.showNum!==false;});
     if(!regions.length)return;
     var lines=regions.map(function(r,i){return (r.n||i+1)+'. '+(r.desc||'');});
     blocks.push((multi?'[이미지 '+(idx+1)+']\n':'')+lines.join('\n'));
   });
-  var base=stripTrailingMarkLines(el.value);
-  el.value=base+(base&&blocks.length?'\n':'')+blocks.join('\n\n');
+  var base=stripTrailingMarkLines(baseText);
+  return base+(base&&blocks.length?'\n':'')+blocks.join('\n\n');
+}
+function syncTextWithMarks(t){
+  var el=textareaFor(t);
+  el.value=buildSyncedMarkText(el.value,itemsFor(t));
+}
+function syncCardTextWithMarks(card,t){
+  if(t==='i')card.iText=buildSyncedMarkText(card.iText||'',issueItems(card));
+  else card.eText=buildSyncedMarkText(card.eText||'',expectedItems(card));
 }
 
 /* ── Jira prompt ── */
